@@ -1,25 +1,54 @@
 const bcrypt = require("bcryptjs");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const { body, validationResult } = require("express-validator");
 
-// HANDLE SIGNUP VALIDATION 
+const validateSignup = [
+  body("username", "Username must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .custom(async (username) => {
+      if (!/^[a-zA-Z0-9-]+$/.test(username)) {
+        return Promise.reject(
+          "Username must only contain letters, numbers, or hyphens."
+        );
+      }
+      const userExists = await prisma.user.findUnique({
+        where: {
+          name: username,
+        },
+      });
+      if (userExists) {
+        return Promise.reject(
+          "Username already exists. Please choose a different one."
+        );
+      }
+    }),
+  body(
+    "password",
+    "Password must be greater than 8 and contain at least one uppercase letter, one lowercase letter, one number, and one symbol."
+  )
+    .trim()
+    .isStrongPassword()
+    .escape(),
+  body("confirmPassword", "Passwords do not match.").custom(
+    (value, { req }) => value === req.body.password
+  ),
+];
 
-async function signup(req, res) {
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
+  next();
+};
+
+async function handleSignup(req, res) {
   const { username, password } = req.body;
-
-  const userExists = await prisma.user.findUnique({
-    where: {
-      name: username,
-    },
-  });
-
-  if (userExists) {
-    return res.status(400).json({ error: "Username already exists" });
-  }
-
-  if (!username || !password) {
-    return res.status(400).json({ error: "Missing username or password" });
-  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -39,6 +68,8 @@ async function signup(req, res) {
       .json({ error: "An error occurred while creating the user" });
   }
 }
+
+const signup = [...validateSignup, handleValidationErrors, handleSignup];
 
 module.exports = {
   signup,
