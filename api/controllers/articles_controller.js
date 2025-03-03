@@ -2,8 +2,9 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function createPost(req, res) {
-  const { title, content, authorId, published } = req.body;
+  const { title, content, published } = req.body;
 
+  const authorId = req.user.id;
   try {
     const newArticle = await prisma.post.create({
       data: {
@@ -54,8 +55,23 @@ async function getPostById(req, res) {
 async function updatePost(req, res) {
   const { id } = req.params;
   const { title, content, published } = req.body;
+  const userId = req.user.id;
 
   try {
+    const post = await prisma.post.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Article not found" });
+    }
+
+    if (post.authorId !== userId) {
+      return res
+        .status(403)
+        .json({ error: "You are not authorized to update this post" });
+    }
+
     const updatedPost = await prisma.post.update({
       where: { id: parseInt(id) },
       data: {
@@ -75,8 +91,23 @@ async function updatePost(req, res) {
 
 async function deletePost(req, res) {
   const { id } = req.params;
+  const userId = req.user.id;
 
   try {
+    const post = await prisma.post.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Article not found" });
+    }
+
+    if (post.authorId !== userId) {
+      return res
+        .status(403)
+        .json({ error: "You are not authorized to delete this post" });
+    }
+
     await prisma.post.delete({
       where: { id: parseInt(id) },
     });
@@ -88,7 +119,6 @@ async function deletePost(req, res) {
       .json({ error: "An error occurred while deleting the article" });
   }
 }
-
 module.exports = {
   createPost,
   getAllPosts,
