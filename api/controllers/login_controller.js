@@ -20,9 +20,9 @@ async function handleLogin(req, res) {
     const payload = { id: user.id, username: user.name };
     console.log(payload);
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+      expiresIn: process.env.JWT_EXPIRATION,
     });
-    console.log(payload)
+    console.log(payload);
     return res.json({ message: "Logged in successfully", token });
   } catch (error) {
     console.error(error);
