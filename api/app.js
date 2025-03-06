@@ -1,9 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const routes = require("./routes");
+const cors = require("cors");
 require("dotenv").config();
 const app = express();
 const passport = require("./passport");
+
+app.use(cors());  
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
