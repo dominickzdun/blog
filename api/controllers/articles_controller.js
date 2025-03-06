@@ -6,7 +6,7 @@ async function createPost(req, res) {
 
   const authorId = req.user.id;
   try {
-    const newArticle = await prisma.post.create({
+    const newPost = await prisma.post.create({
       data: {
         title,
         content,
@@ -14,12 +14,12 @@ async function createPost(req, res) {
         published,
       },
     });
-    res.status(201).json(newArticle);
+    res.status(201).json(newPost);
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ error: "An error occurred while creating the article" });
+      .json({ error: "An error occurred while creating the post" });
   }
 }
 
@@ -29,9 +29,7 @@ async function getAllPosts(req, res) {
     res.json(allPosts);
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ error: "An error occurred while retrieving articles" });
+    res.status(500).json({ error: "An error occurred while retrieving posts" });
   }
 }
 
@@ -41,14 +39,14 @@ async function getPostById(req, res) {
   try {
     const post = await prisma.post.findUnique({ where: { id: parseInt(id) } });
     if (!post) {
-      return res.status(404).json({ error: "Article not found" });
+      return res.status(404).json({ error: "Post not found" });
     }
     res.json(post);
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ error: "An error occurred while retrieving the article" });
+      .json({ error: "An error occurred while retrieving the post" });
   }
 }
 
@@ -63,7 +61,7 @@ async function updatePost(req, res) {
     });
 
     if (!post) {
-      return res.status(404).json({ error: "Article not found" });
+      return res.status(404).json({ error: "Post not found" });
     }
 
     if (post.authorId !== userId) {
@@ -99,7 +97,7 @@ async function deletePost(req, res) {
     });
 
     if (!post) {
-      return res.status(404).json({ error: "Article not found" });
+      return res.status(404).json({ error: "Post not found" });
     }
 
     if (post.authorId !== userId) {
@@ -116,13 +114,86 @@ async function deletePost(req, res) {
     console.error(error);
     res
       .status(500)
-      .json({ error: "An error occurred while deleting the article" });
+      .json({ error: "An error occurred while deleting the post" });
   }
 }
+
+async function getComments(req, res) {
+  const { postID } = req.params;
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: parseInt(postID),
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    if (post.published === false) {
+      return res
+        .status(403)
+        .json({ error: "This post hasn't been published yet" });
+    }
+
+    const comments = await prisma.comment.findMany({
+      where: { postId: parseInt(postID) },
+    });
+    res.json(comments);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while retrieving comments" });
+  }
+}
+
+async function createComment(req, res) {
+  const { postID } = req.params;
+  const { content } = req.body;
+  const authorId = req.user.id;
+
+  try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: parseInt(postID),
+      },
+    });
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    if (post.published === false) {
+      return res
+        .status(403)
+        .json({ error: "You cannot comment on a draft post" });
+    }
+
+    const newComment = await prisma.comment.create({
+      data: {
+        content,
+        postId: parseInt(postID),
+        authorId: authorId,
+      },
+    });
+    res.status(201).json(newComment);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while creating the comment" });
+  }
+}
+
 module.exports = {
   createPost,
   getAllPosts,
   getPostById,
   updatePost,
   deletePost,
+  getComments,
+  createComment,
 };

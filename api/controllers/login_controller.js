@@ -22,7 +22,7 @@ async function handleLogin(req, res) {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRATION,
     });
-    console.log(payload);
+
     return res.json({ message: "Logged in successfully", token });
   } catch (error) {
     console.error(error);
