@@ -18,7 +18,7 @@ async function handleLogin(req, res) {
     }
 
     const payload = { id: user.id, username: user.name };
-    console.log(payload);
+    
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRATION,
     });
