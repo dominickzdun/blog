@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import { Link} from "react-router";
 function Articles() {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,8 +39,10 @@ function Articles() {
         <ul>
           {articles.map((article) => (
             <li key={article.id}>
-              <h2>{article.title}</h2>
-              <p>{article.content}</p>
+              <Link to={`/articles/${article.id}`} className="article-link">
+                <h2>{article.title}</h2>
+                <p className="article-preview">{article.content.substring(0, 100)}...</p>
+              </Link>
             </li>
           ))}
         </ul>
