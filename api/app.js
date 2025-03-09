@@ -14,7 +14,6 @@ app.use(bodyParser.json());
 
 app.use(passport.initialize());
 
-app.use("/", routes.main);
 app.use("/articles", routes.articles);
 app.use("/login", routes.login);
 app.use("/signup", routes.signup);
