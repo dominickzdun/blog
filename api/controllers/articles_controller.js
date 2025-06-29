@@ -40,6 +40,9 @@ async function getAllPosts(req, res) {
           },
         },
       },
+      orderBy: {
+        datePosted: "desc", // Sort by newest first
+      },
     });
     const formattedPosts = allPosts.map((post) => ({
       ...post,
@@ -235,6 +238,9 @@ async function getUserArticles(req, res) {
     const posts = await prisma.post.findMany({
       where: {
         authorId: parseInt(authorId),
+      },
+      orderBy: {
+        datePosted: "desc", // Sort by newest first
       },
     });
     res.status(200).json(posts);
