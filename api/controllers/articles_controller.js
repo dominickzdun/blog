@@ -241,6 +241,51 @@ async function createComment(req, res) {
     }
 }
 
+async function deleteComment(req, res) {
+  const { postID, commentID } = req.params;
+  const userId = req.user.id;
+
+  try {
+    // First, find the comment to verify it exists and get the author
+    const comment = await prisma.comment.findUnique({
+      where: { id: parseInt(commentID) },
+    });
+
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    // Check if the user is authorized to delete this comment
+    if (comment.authorId !== userId) {
+      return res
+        .status(403)
+        .json({ error: "You are not authorized to delete this comment" });
+    }
+
+    // Verify the comment belongs to the specified post
+    if (comment.postId !== parseInt(postID)) {
+      return res.status(400).json({ error: "Comment does not belong to this post" });
+    }
+
+    // Delete the comment
+    await prisma.comment.delete({
+      where: { id: parseInt(commentID) },
+    });
+
+    res.json({ message: "Comment deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the comment" });
+  }
+}
+
+async function updateComment(req, res) {
+  // TODO: Implement comment update functionality
+  res.status(501).json({ error: "Comment update not implemented yet" });
+}
+
 async function getUserArticles(req, res) {
     const authorId = req.user.id;
 
@@ -262,7 +307,7 @@ async function getUserArticles(req, res) {
     }
 }
 
-//combines controller with validation middleware
+// Combines controller with validation middleware
 const createPostWithValidation = [
     validatePost,
     handleValidationErrors,
@@ -283,5 +328,7 @@ module.exports = {
     updatePost,
     deletePost,
     getComments,
+    deleteComment,
+    updateComment,
     getUserArticles,
 };
