@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Header from "./Header";
+import { useNavigate } from "react-router";
 
 function Login() {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
-
+  const navigate = useNavigate();
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -45,7 +46,7 @@ function Login() {
       localStorage.setItem('username', formData.username);
 
 
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
       console.error("Login error:", error);
       setError(error.message || "An error occurred during login");

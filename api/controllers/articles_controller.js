@@ -1,9 +1,14 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const { body, validationResult } = require("express-validator");
+const {
+  validatePost,
+  validateComment,
+  handleValidationErrors,
+} = require("../middleware/validation");
 
 async function createPost(req, res) {
   const { title, content, published } = req.body;
-
   const authorId = req.user.id;
   try {
     const newPost = await prisma.post.create({
@@ -25,8 +30,23 @@ async function createPost(req, res) {
 
 async function getAllPosts(req, res) {
   try {
-    const allPosts = await prisma.post.findMany({ where: { published: true } });
-    res.json(allPosts);
+    const allPosts = await prisma.post.findMany({
+      where: { published: true },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+    const formattedPosts = allPosts.map((post) => ({
+      ...post,
+      datePosted: post.datePosted.toLocaleDateString("en-US"),
+    }));
+
+    res.json(formattedPosts);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred while retrieving posts" });
@@ -35,7 +55,9 @@ async function getAllPosts(req, res) {
 
 async function getPostById(req, res) {
   const { id } = req.params;
-
+  if (id == "user") {
+    return;
+  }
   try {
     const post = await prisma.post.findUnique({ where: { id: parseInt(id) } });
     if (!post) {
@@ -54,7 +76,6 @@ async function updatePost(req, res) {
   const { id } = req.params;
   const { title, content, published } = req.body;
   const userId = req.user.id;
-
   try {
     const post = await prisma.post.findUnique({
       where: { id: parseInt(id) },
@@ -122,6 +143,8 @@ async function getComments(req, res) {
   const { postID } = req.params;
 
   try {
+    //check if post exists or is published
+    //then proceed with getting comments
     const post = await prisma.post.findUnique({
       where: {
         id: parseInt(postID),
@@ -140,7 +163,16 @@ async function getComments(req, res) {
 
     const comments = await prisma.comment.findMany({
       where: { postId: parseInt(postID) },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
+    console.log(comments);
     res.json(comments);
   } catch (error) {
     console.error(error);
@@ -178,6 +210,14 @@ async function createComment(req, res) {
         postId: parseInt(postID),
         authorId: authorId,
       },
+      include: {
+        author: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
     res.status(201).json(newComment);
   } catch (error) {
@@ -188,12 +228,42 @@ async function createComment(req, res) {
   }
 }
 
-module.exports = {
+async function getUserArticles(req, res) {
+  const authorId = req.user.id;
+
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        authorId: parseInt(authorId),
+      },
+    });
+    res.status(200).json(posts);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An error occurred while fetching posts" });
+  }
+}
+
+//combines controller with validation middleware
+const createPostWithValidation = [
+  validatePost,
+  handleValidationErrors,
   createPost,
+];
+
+const createCommentWithValidation = [
+  validateComment,
+  handleValidationErrors,
+  createComment,
+];
+
+module.exports = {
+  createPost: createPostWithValidation,
+  createComment: createCommentWithValidation,
   getAllPosts,
   getPostById,
   updatePost,
   deletePost,
   getComments,
-  createComment,
+  getUserArticles,
 };

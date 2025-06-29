@@ -5,6 +5,18 @@ const router = Router();
 
 router.get("/", articlesController.getAllPosts);
 
+router.get(
+  "/user",
+  passport.authenticate("jwt", { session: false }),
+  articlesController.getUserArticles
+);
+
+router.post(
+  "/create",
+  passport.authenticate("jwt", { session: false }),
+  articlesController.createPost
+);
+
 router.get("/:id", articlesController.getPostById);
 
 router.put(
@@ -17,12 +29,6 @@ router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   articlesController.deletePost
-);
-
-router.post(
-  "/create",
-  passport.authenticate("jwt", { session: false }),
-  articlesController.createPost
 );
 
 router.get("/:postID/comments", articlesController.getComments);

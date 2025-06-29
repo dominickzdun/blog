@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import Header from "./Header";
 import { useState } from "react";
 
@@ -7,7 +8,7 @@ function Signup() {
     password: "",
     confirmPassword: "",
   });
-
+  const navigate = useNavigate();
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,7 +47,7 @@ function Signup() {
         }
       } else {
         // Successful signup
-        window.location.href = "/login"; // Redirect to login
+        navigate("/login");
       }
     } catch (error) {
       setErrors([{ msg: "Network error. Please try again." }]);

@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
-import { Link} from "react-router";
+import { Link } from "react-router";
 function Articles() {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [reload, setReload] = useState(false);
+
+  if (reload) {
+    setReload(false);
+  }
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -18,7 +23,6 @@ function Articles() {
         const data = await response.json();
         setArticles(data);
       } catch (error) {
-        console.error("Error fetching data:", error);
         setError(error.message);
       } finally {
         setIsLoading(false);
@@ -28,9 +32,11 @@ function Articles() {
     fetchArticles();
   }, []);
 
+
+
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error: {error}</p>;
-
+  console.log(articles)
   return (
     <>
       {articles.length === 0 ? (
@@ -41,7 +47,11 @@ function Articles() {
             <li key={article.id}>
               <Link to={`/articles/${article.id}`} className="article-link">
                 <h2>{article.title}</h2>
-                <p className="article-preview">{article.content.substring(0, 100)}...</p>
+                <p className="article-preview">
+                  {article.content.substring(0, 100)}...
+                </p>
+                <p>{article.author.name}</p>
+                <p>{article.datePosted}</p>
               </Link>
             </li>
           ))}
