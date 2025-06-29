@@ -6,7 +6,7 @@ require("dotenv").config();
 const app = express();
 const passport = require("./passport");
 
-app.use(cors());  
+app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

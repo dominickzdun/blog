@@ -10,16 +10,16 @@ import Dashboard from "./components/Dashboard.jsx";
 import PostMaker from "./components/PostMaker.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/articles/:id" element={<Article />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/create" element={<PostMaker />} />
-      <Route path="/edit/:id" element={<PostMaker />} />
-      <Route path="*" element={<h1>Not Found</h1>} />
-    </Routes>
-  </BrowserRouter>
+    <BrowserRouter>
+        <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/articles/:id" element={<Article />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/create" element={<PostMaker />} />
+            <Route path="/edit/:id" element={<PostMaker />} />
+            <Route path="*" element={<h1>Not Found</h1>} />
+        </Routes>
+    </BrowserRouter>
 );
