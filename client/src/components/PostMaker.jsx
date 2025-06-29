@@ -54,6 +54,13 @@ function PostMaker() {
 
   const handleSubmitCreate = async (e) => {
     e.preventDefault();
+    setError(null);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You must be logged in to create a post. Please log in first");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -62,14 +69,28 @@ function PostMaker() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(post),
         }
       );
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        if (response.status === 401) {
+          setError("Authentication failed. Please log in again");
+        } else if (response.status === 400) {
+          setError(
+            `Validation failed: ${
+              errorData?.errors
+                ? errorData.errors.map((e) => e.msg).join(" ")
+                : "Please check your input"
+            }`
+          );
+        } else {
+          setError(`HTTP error! Status: ${response.status}`);
+        }
+        return;
       }
 
       const data = await response.json();
@@ -77,11 +98,19 @@ function PostMaker() {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error creating post:", error);
+      setError("An error occurred while creating the post. Please try again");
     }
   };
 
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
+    setError(null);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You must be logged in to edit a post. Please log in first");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -90,14 +119,28 @@ function PostMaker() {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(post),
         }
       );
 
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        const errorData = await response.json().catch(() => null);
+        if (response.status === 401) {
+          setError("Authentication failed. Please log in again");
+        } else if (response.status === 400) {
+          setError(
+            `Validation failed: ${
+              errorData?.errors
+                ? errorData.errors.map((e) => e.msg).join(", ")
+                : "Please check your input"
+            }`
+          );
+        } else {
+          setError(`HTTP error! Status: ${response.status}`);
+        }
+        return;
       }
 
       const data = await response.json();
@@ -105,16 +148,24 @@ function PostMaker() {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error updating post:", error);
+      setError("An error occurred while updating the post. Please try again");
     }
   };
 
-  if (error) return <p>Error: {error}</p>;
   if (loading) return <p>Loading...</p>;
 
   if (!id) {
     //if there isnt an id,  user wants to create post
     return (
       <form className="post-maker" onSubmit={handleSubmitCreate}>
+        {error && (
+          <div
+            className="error-message"
+            style={{ color: "red", marginBottom: "10px" }}
+          >
+            {error}
+          </div>
+        )}
         <label htmlFor="title">Title</label>
         <input
           type="text"
@@ -144,6 +195,14 @@ function PostMaker() {
 
     return (
       <form className="post-maker" onSubmit={handleSubmitEdit}>
+        {error && (
+          <div
+            className="error-message"
+            style={{ color: "red", marginBottom: "10px" }}
+          >
+            {error}
+          </div>
+        )}
         <label htmlFor="title">Title</label>
         <input
           type="text"
