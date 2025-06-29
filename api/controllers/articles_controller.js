@@ -174,6 +174,9 @@ async function getComments(req, res) {
           },
         },
       },
+      orderBy: {
+        datePosted: "desc", // Sort by newest first
+      },
     });
     console.log(comments);
     res.json(comments);
