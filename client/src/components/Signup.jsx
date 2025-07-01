@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import Header from "./Header";
+import Footer from "./Footer";
 import { useState } from "react";
 
 function Signup() {
@@ -126,6 +127,7 @@ function Signup() {
                     )}
                 </form>
             </div>
+            <footer><Footer></Footer></footer>
         </>
     );
 }

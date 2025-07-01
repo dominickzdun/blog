@@ -25,21 +25,29 @@ function Header() {
     return (
         <header className="main-header">
             <nav className="nav-links">
-                <a href="/">Home</a>
+                <div className="header-left">
+                    <a className="header-main-name" href="/">
+                        chitai
+                    </a>
+                </div>
 
                 {isLoggedIn ? (
-                    <>
-                        <span className="welcome-message">{username}</span>
-                        <button onClick={handleLogout} className="logout-btn">
-                            Logout
-                        </button>
+                    <div className="header-right">
                         <a href="/dashboard">Dashboard</a>
-                    </>
+                        <span className="display-user">{username}</span>
+                        <button onClick={handleLogout} className="logout-btn">
+                            <img
+                                src="../../export-arrow-right.svg"
+                                alt="Logout"
+                                className="header-logout-image"
+                            />
+                        </button>
+                    </div>
                 ) : (
-                    <>
+                    <div className="header-right">
                         <a href="/login">Login</a>
                         <a href="/signup">Signup</a>
-                    </>
+                    </div>
                 )}
             </nav>
         </header>

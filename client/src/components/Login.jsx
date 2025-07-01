@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "./Header";
+import Footer from "./Footer";
 import { useNavigate } from "react-router";
 
 function Login() {
@@ -97,6 +98,7 @@ function Login() {
                     </button>
                 </form>
             </div>
+            <footer><Footer></Footer></footer>
         </>
     );
 }

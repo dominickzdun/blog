@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import Header from "./Header";
+import Footer from "./Footer";
 function Dashboard() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userPosts, setUserPosts] = useState([]);
@@ -131,31 +132,36 @@ function Dashboard() {
             <header>
                 <Header></Header>
             </header>
-            <h1>Dashboard</h1>
-            <Link to="/create">Create a new post</Link>
-            <ul>
-                {userPosts.map((post) => (
-                    <li key={post.id}>
-                        <Link to={`/articles/${post.id}`}>{post.title}</Link>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={post.published}
-                                onChange={(e) =>
-                                    handlePostVisibilityChange(post)
-                                }
-                            />
-                            Published
-                        </label>
-                        <button onClick={() => handlePostDeletion(post.id)}>
-                            Delete
-                        </button>
-                        <button onClick={() => handleEditRedirect(post.id)}>
-                            Edit
-                        </button>
-                    </li>
-                ))}
-            </ul>
+            <main>
+                <h1>Dashboard</h1>
+                <Link to="/create">Create a new post</Link>
+                <ul>
+                    {userPosts.map((post) => (
+                        <li key={post.id}>
+                            <Link to={`/articles/${post.id}`}>
+                                {post.title}
+                            </Link>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={post.published}
+                                    onChange={(e) =>
+                                        handlePostVisibilityChange(post)
+                                    }
+                                />
+                                Published
+                            </label>
+                            <button onClick={() => handlePostDeletion(post.id)}>
+                                Delete
+                            </button>
+                            <button onClick={() => handleEditRedirect(post.id)}>
+                                Edit
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            </main>
+            <footer><Footer></Footer></footer>
         </div>
     );
 }

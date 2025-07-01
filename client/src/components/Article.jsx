@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import Header from "./Header";
+import Footer from "./Footer"
 import ErrorMessage from "./ErrorMessage";
+
 function ArticleDetail() {
     const [article, setArticle] = useState(null);
     const [comments, setComments] = useState(null);
@@ -389,6 +391,7 @@ function ArticleDetail() {
                     )}
                 </div>
             </main>
+            <footer><Footer></Footer></footer>
         </>
     );
 }

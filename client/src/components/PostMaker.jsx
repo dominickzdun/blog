@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Header from "./Header";
+import Footer from "./Footer";
 import { useParams, useNavigate } from "react-router";
 function PostMaker() {
     const { id } = useParams();
@@ -165,75 +167,97 @@ function PostMaker() {
     if (!id) {
         //if there isnt an id,  user wants to create post
         return (
-            <form className="post-maker" onSubmit={handleSubmitCreate}>
-                {error && (
-                    <div
-                        className="error-message"
-                        style={{ color: "red", marginBottom: "10px" }}
-                    >
-                        {error}
-                    </div>
-                )}
-                <label htmlFor="title">Title</label>
-                <input
-                    type="text"
-                    name="title"
-                    value={post.title}
-                    onChange={handleChange}
-                />
-                <label htmlFor="content">Content</label>
-                <textarea
-                    name="content"
-                    value={post.content}
-                    onChange={handleChange}
-                ></textarea>
-                <label htmlFor="published">Publish</label>
-                <input
-                    type="checkbox"
-                    name="published"
-                    checked={isChecked}
-                    onChange={handleCheck}
-                />
+            <>
+                <header>
+                    <Header></Header>
+                </header>
+                <main>
+                    <form className="post-maker" onSubmit={handleSubmitCreate}>
+                        {error && (
+                            <div
+                                className="error-message"
+                                style={{ color: "red", marginBottom: "10px" }}
+                            >
+                                {error}
+                            </div>
+                        )}
+                        <label htmlFor="title">Title</label>
+                        <input
+                            type="text"
+                            name="title"
+                            value={post.title}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="content">Content</label>
+                        <textarea
+                            name="content"
+                            value={post.content}
+                            onChange={handleChange}
+                        ></textarea>
+                        <label htmlFor="published">Publish</label>
+                        <input
+                            type="checkbox"
+                            name="published"
+                            checked={isChecked}
+                            onChange={handleCheck}
+                        />
 
-                <button type="submit">Create Post</button>
-            </form>
+                        <button type="submit">Create Post</button>
+                    </form>
+                </main>
+
+                <footer>
+                    <Footer></Footer>
+                </footer>
+            </>
         );
     } else {
         // else user wants to edit post
 
         return (
-            <form className="post-maker" onSubmit={handleSubmitEdit}>
-                {error && (
-                    <div
-                        className="error-message"
-                        style={{ color: "red", marginBottom: "10px" }}
-                    >
-                        {error}
-                    </div>
-                )}
-                <label htmlFor="title">Title</label>
-                <input
-                    type="text"
-                    name="title"
-                    value={post.title}
-                    onChange={handleChange}
-                />
-                <label htmlFor="content">Content</label>
-                <textarea
-                    name="content"
-                    value={post.content}
-                    onChange={handleChange}
-                ></textarea>
-                <label htmlFor="published">Publish</label>
-                <input
-                    type="checkbox"
-                    name="published"
-                    checked={isChecked}
-                    onChange={handleCheck}
-                />
+            <>
+                <header>
+                    <Header></Header>
+                </header>
+                <main>
+                    {" "}
+                    <form className="post-maker" onSubmit={handleSubmitEdit}>
+                        {error && (
+                            <div
+                                className="error-message"
+                                style={{ color: "red", marginBottom: "10px" }}
+                            >
+                                {error}
+                            </div>
+                        )}
+                        <label htmlFor="title">Title</label>
+                        <input
+                            type="text"
+                            name="title"
+                            value={post.title}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="content">Content</label>
+                        <textarea
+                            name="content"
+                            value={post.content}
+                            onChange={handleChange}
+                        ></textarea>
+                        <label htmlFor="published">Publish</label>
+                        <input
+                            type="checkbox"
+                            name="published"
+                            checked={isChecked}
+                            onChange={handleCheck}
+                        />
 
-                <button type="submit">Finalize Edit</button>
-            </form>
+                        <button type="submit">Finalize Edit</button>
+                    </form>
+                </main>
+                <footer>
+                    <Footer></Footer>
+                </footer>
+            </>
         );
     }
 }
