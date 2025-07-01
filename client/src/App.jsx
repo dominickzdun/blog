@@ -1,4 +1,4 @@
-import Articles from "./components/articles";
+import Articles from "./components/Articles";
 import Header from "./components/Header";
 function App() {
     <Articles />;

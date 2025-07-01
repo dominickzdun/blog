@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const passport = require("passport");
 const articlesController = require("../controllers/articles_controller");
+const { validateComment, handleValidationErrors } = require("../middleware/validation");
 const router = Router();
 
 router.get("/", articlesController.getAllPosts);
@@ -36,12 +37,16 @@ router.get("/:postID/comments", articlesController.getComments);
 router.post(
     "/:postID/comments",
     passport.authenticate("jwt", { session: false }),
+    validateComment,
+    handleValidationErrors,
     articlesController.createComment
 );
 
 router.put(
     "/:postID/comments/:commentID",
     passport.authenticate("jwt", { session: false }),
+    validateComment,
+    handleValidationErrors,
     articlesController.updateComment
 );
 
