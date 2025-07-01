@@ -63,7 +63,7 @@ function Signup() {
     return (
         <>
             <Header />
-            <div className="signup-container">
+            <main className="signup-container">
                 <h2>Signup</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -126,7 +126,7 @@ function Signup() {
                         </div>
                     )}
                 </form>
-            </div>
+            </main>
             <footer><Footer></Footer></footer>
         </>
     );

@@ -128,7 +128,7 @@ function Dashboard() {
     };
 
     return (
-        <div>
+        <>
             <header>
                 <Header></Header>
             </header>
@@ -162,7 +162,7 @@ function Dashboard() {
                 </ul>
             </main>
             <footer><Footer></Footer></footer>
-        </div>
+        </>
     );
 }
 

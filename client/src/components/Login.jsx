@@ -58,7 +58,7 @@ function Login() {
     return (
         <>
             <Header />
-            <div className="login-container">
+            <main className="login-container">
                 <h2>Login</h2>
                 {error && <div className="error-message">{error}</div>}
 
@@ -97,8 +97,10 @@ function Login() {
                         {isLoading ? "Logging in..." : "Login"}
                     </button>
                 </form>
-            </div>
-            <footer><Footer></Footer></footer>
+            </main>
+            <footer>
+                <Footer></Footer>
+            </footer>
         </>
     );
 }

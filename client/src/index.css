@@ -19,6 +19,12 @@ a {
     --persian-pink: #de89be;
 }
 
+#root{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 header {
     position: sticky;
     top: 0;
@@ -70,7 +76,7 @@ header {
 main {
     background-color: var(--charcoal);
     padding-bottom: 50px; /* Height of footer + some extra space */
-    min-height: calc(100vh - 50px); /* Full height minus header */
+    flex: 1;
 }
 
 footer {
