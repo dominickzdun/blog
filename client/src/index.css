@@ -6,6 +6,14 @@ body {
     background-color: var(--charcoal);
 }
 
+* {
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
 a {
     text-decoration: none;
     color: white;
@@ -24,7 +32,10 @@ a {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overflow: hidden;
 }
+
+/* Header */
 
 header {
     position: sticky;
@@ -42,10 +53,9 @@ header {
 
 .header-right {
     display: flex;
-    min-width: 250px;
     align-items: center;
     justify-content: space-between;
-    font-size: 24px;
+    font-size: 20px;
     gap: 16px;
 }
 
@@ -72,9 +82,10 @@ header {
     filter: brightness(0) invert(1);
 }
 
+/* Header end*/
+
 main {
     background-color: var(--charcoal);
-    padding-bottom: 50px;
     flex: 1;
     padding: 0 25px;
 }
@@ -102,7 +113,7 @@ main {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin: 0; /* Remove default margins */
+    margin: 0;
 }
 
 footer {
@@ -157,10 +168,6 @@ footer {
     border: 2px red solid;
 }
 
-.field-error {
-    color: red;
-}
-
 .interaction-btn {
     background-color: var(--mimi-pink);
     border: none;
@@ -168,11 +175,6 @@ footer {
 
     cursor: pointer;
     width: 100%;
-}
-
-.signup-btn {
-    border-radius: 4px;
-    height: 40px;
 }
 
 .interaction-btn:hover,
@@ -192,13 +194,15 @@ footer {
 
 /*This is for forms login and signup  */
 
-.signup-main{
+.signup-main,
+.login-main {
     display: flex;
     justify-content: center;
 }
 
-.signup-container{
-    width: 750px;
+.signup-container,
+.login-container {
+    width: 450px;
 }
 
 .form-group {
@@ -211,18 +215,35 @@ footer {
     height: 24px;
 }
 
+.signup-form,
+.login-form {
+    background-color: var(--black);
+    padding: 15px;
+    border-radius: 15px;
+}
+
 .field-error {
     color: #f66;
     font-size: 14px;
     margin-top: 4px;
     display: block;
+    color: var(--error-red);
+    text-align: center;
+    height: 51px;
+    align-content: center;
 }
 
 .error-container {
     min-height: 55px;
     margin-top: 4px;
 }
-/*This is for forms login and signup */
+
+.signup-btn,
+.login-btn {
+    border-radius: 4px;
+    height: 40px;
+}
+/*This is for forms login and signup end */
 
 @keyframes slideDown {
     from {

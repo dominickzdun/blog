@@ -124,7 +124,7 @@ function Signup() {
                         />
                     )}
 
-                    <form onSubmit={handleSubmit}>
+                    <form className="signup-form" onSubmit={handleSubmit}>
                         <div className="form-group">
                             <label htmlFor="username">Username</label>
                             <br></br>

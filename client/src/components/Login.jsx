@@ -8,8 +8,12 @@ function Login() {
         username: "",
         password: "",
     });
+    const [fieldErrors, setFieldErrors] = useState({
+        login: "",
+        general: "",
+    });
+
     const navigate = useNavigate();
-    const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
@@ -23,7 +27,10 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setError(null);
+        setFieldErrors({
+            login: "",
+            general: "",
+        });
 
         try {
             const response = await fetch(
@@ -39,7 +46,12 @@ function Login() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || "Login failed");
+                console.log(errorData);
+                setFieldErrors((prev) => ({
+                    ...prev,
+                    login: errorData.message || "Login failed",
+                }));
+                return;
             }
 
             const data = await response.json();
@@ -49,54 +61,70 @@ function Login() {
             navigate("/");
         } catch (error) {
             console.error("Login error:", error);
-            setError(error.message || "An error occurred during login");
+            setFieldErrors((prev) => ({
+                ...prev,
+                login: "Network error. Please try again.",
+            }));
         } finally {
             setIsLoading(false);
         }
     };
-
+    console.log(fieldErrors);
     return (
         <>
             <Header />
-            <main className="login-container">
-                <h2>Login</h2>
-                {error && <div className="error-message">{error}</div>}
+            <main className="login-main">
+                <div className="login-container">
+                    <h2>Login</h2>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            placeholder="Enter your username"
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Enter your password"
-                            required
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="login-button"
-                    >
-                        {isLoading ? "Logging in..." : "Login"}
-                    </button>
-                </form>
+                    <form className="login-form" onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="username">Username</label>
+                            <input
+                                type="text"
+                                className="form-input"
+                                id="username"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                placeholder="Enter your username"
+                                required
+                            />
+                        </div>
+                        <div className="error-container">
+                            {fieldErrors.login && (
+                                <span className="field-error">{}</span>
+                            )}
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                className="form-input"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Enter your password"
+                                required
+                            />
+                        </div>
+                        <div className="error-container">
+                            {fieldErrors.login && (
+                                <span className="field-error">
+                                    {fieldErrors.login}
+                                </span>
+                            )}
+                        </div>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="login-btn interaction-btn"
+                        >
+                            {isLoading ? "Logging in..." : "Login"}
+                        </button>
+                    </form>
+                </div>
             </main>
             <footer>
                 <Footer></Footer>
