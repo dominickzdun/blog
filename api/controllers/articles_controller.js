@@ -1,6 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const { body, validationResult } = require("express-validator");
 const {
     validatePost,
     validateComment,
@@ -150,8 +149,8 @@ async function getComments(req, res) {
     const { postID } = req.params;
 
     try {
-        //check if post exists or is published
-        //then proceed with getting comments
+        // Check if post exists or is published
+        // Then proceed with getting comments
         const post = await prisma.post.findUnique({
             where: {
                 id: parseInt(postID),
@@ -246,7 +245,6 @@ async function deleteComment(req, res) {
     const userId = req.user.id;
 
     try {
-        // First, find the comment to verify it exists and get the author
         const comment = await prisma.comment.findUnique({
             where: { id: parseInt(commentID) },
         });
@@ -255,23 +253,18 @@ async function deleteComment(req, res) {
             return res.status(404).json({ error: "Comment not found" });
         }
 
-        // Check if the user is authorized to delete this comment
         if (comment.authorId !== userId) {
-            return res
-                .status(403)
-                .json({
-                    error: "You are not authorized to delete this comment",
-                });
+            return res.status(403).json({
+                error: "You are not authorized to delete this comment",
+            });
         }
 
-        // Verify the comment belongs to the specified post
         if (comment.postId !== parseInt(postID)) {
             return res
                 .status(400)
                 .json({ error: "Comment does not belong to this post" });
         }
 
-        // Delete the comment
         await prisma.comment.delete({
             where: { id: parseInt(commentID) },
         });
@@ -300,11 +293,9 @@ async function updateComment(req, res) {
         }
 
         if (comment.authorId !== userId) {
-            return res
-                .status(403)
-                .json({
-                    error: "You are not authorized to update this comment",
-                });
+            return res.status(403).json({
+                error: "You are not authorized to update this comment",
+            });
         }
 
         const updatedComment = await prisma.comment.update({
@@ -336,7 +327,6 @@ async function getUserArticles(req, res) {
         });
         res.status(200).json(posts);
     } catch (error) {
-        console.log(error);
         res.status(500).json({
             error: "An error occurred while fetching posts",
         });

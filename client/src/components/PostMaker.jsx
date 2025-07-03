@@ -165,7 +165,7 @@ function PostMaker() {
     if (loading) return <p>Loading...</p>;
 
     if (!id) {
-        //if there isnt an id,  user wants to create post
+        // If there isnt an id,  user wants to create post
         return (
             <>
                 <header>
@@ -212,7 +212,7 @@ function PostMaker() {
             </>
         );
     } else {
-        // else user wants to edit post
+        // Else user wants to edit post
 
         return (
             <>

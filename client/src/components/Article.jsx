@@ -1,21 +1,24 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import Header from "./Header";
-import Footer from "./Footer"
+import Footer from "./Footer";
 import ErrorMessage from "./ErrorMessage";
 
 function ArticleDetail() {
     const [article, setArticle] = useState(null);
     const [comments, setComments] = useState(null);
+
     const [userCreatedComment, setUserCreatedComment] = useState(""); // Stores comment created by user
+
     const [isArticleLoading, setIsArticleLoading] = useState(true);
     const [isCommentsLoading, setIsCommentsLoading] = useState(true);
+
     const [activeManageMenu, setActiveManageMenu] = useState(null); // Track which menu is open
     const [currentUser, setCurrentUser] = useState(null); // Track current user
+
     const [editingCommentId, setEditingCommentId] = useState(null); // Which comment is being edited
     const [editingCommentContent, setEditingCommentContent] = useState(""); // Content of comment being edited
     const [isSubmittingComment, setIsSubmittingComment] = useState(false); // Track comment submission loading state
-    const [successMessage, setSuccessMessage] = useState(null); // Track success messages
 
     const [error, setError] = useState(null);
     const { id } = useParams();
@@ -56,6 +59,7 @@ function ArticleDetail() {
                 setIsArticleLoading(false);
             }
         };
+
         const fetchArticleComments = async () => {
             try {
                 const response = await fetch(
@@ -147,6 +151,7 @@ function ArticleDetail() {
             setIsSubmittingComment(false);
         }
     };
+    
     const handleManageCommentDisplay = (commentId) => {
         setActiveManageMenu(activeManageMenu === commentId ? null : commentId);
     };
@@ -391,7 +396,9 @@ function ArticleDetail() {
                     )}
                 </div>
             </main>
-            <footer><Footer></Footer></footer>
+            <footer>
+                <Footer></Footer>
+            </footer>
         </>
     );
 }
