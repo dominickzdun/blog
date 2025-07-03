@@ -17,9 +17,10 @@ a {
     --lilac: #c297b8;
     --mimi-pink: #fdcff3;
     --persian-pink: #de89be;
+    --error-red: #f66;
 }
 
-#root{
+#root {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -28,8 +29,8 @@ a {
 header {
     position: sticky;
     top: 0;
-    margin: 0; /* Reset any default margins */
-    padding: 0; /* Reset any default padding */
+    margin: 0;
+    padding: 0;
     background-color: var(--black);
 }
 
@@ -54,9 +55,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-left: 25px;
-    padding-right: 25px;
-    
+    padding: 0 25px;
     box-sizing: border-box;
 }
 
@@ -75,8 +74,35 @@ header {
 
 main {
     background-color: var(--charcoal);
-    padding-bottom: 50px; /* Height of footer + some extra space */
+    padding-bottom: 50px;
     flex: 1;
+    padding: 0 25px;
+}
+
+.article-grid {
+    display: grid;
+    list-style-type: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    gap: 8px;
+    padding: 0;
+}
+
+.article-grid-item {
+    background-color: var(--black);
+    border-radius: 12px;
+    min-width: 250px;
+    padding: 15px;
+}
+
+.article-grid-item h2,
+.article-grid-item p,
+.article-grid-item a {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0; /* Remove default margins */
 }
 
 footer {
@@ -110,31 +136,93 @@ footer {
 
 .error-message {
     position: fixed;
-    top: 20px;
+    bottom: 60px;
+    list-style-type: none;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
-    background: #fee;
+    background: rgb(180, 37, 37);
     border: 1px solid #f66;
     border-radius: 6px;
     padding: 12px 20px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    animation: slideUp 0.3s ease-out;
+}
+
+.error-message .closing {
     animation: slideDown 0.3s ease-out;
 }
 
-.error-message.closing {
-    animation: slideUp 0.3s ease-out;
+.error-input {
+    border: 2px red solid;
+}
+
+.field-error {
+    color: red;
+}
+
+.interaction-btn {
+    background-color: var(--mimi-pink);
+    border: none;
+    width: 75px;
+
+    cursor: pointer;
+    width: 100%;
+}
+
+.signup-btn {
+    border-radius: 4px;
+    height: 40px;
+}
+
+.interaction-btn:hover,
+.interaction-btn:active {
+    background-color: var(--lilac);
 }
 
 .error-message-btn {
     margin-left: 10px;
     background: none;
     border: none;
-    color: #f66;
+    color: var(--error-red);
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
 }
+
+/*This is for forms login and signup  */
+
+.signup-main{
+    display: flex;
+    justify-content: center;
+}
+
+.signup-container{
+    width: 750px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-input {
+    height: 24px;
+}
+
+.field-error {
+    color: #f66;
+    font-size: 14px;
+    margin-top: 4px;
+    display: block;
+}
+
+.error-container {
+    min-height: 55px;
+    margin-top: 4px;
+}
+/*This is for forms login and signup */
 
 @keyframes slideDown {
     from {
@@ -149,12 +237,12 @@ footer {
 
 @keyframes slideUp {
     from {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
     }
     to {
-        opacity: 0;
-        transform: translateX(-50%) translateY(-20px);
+        opacity: 1;
+        transform: translateX(-50%) translateY(0px);
     }
 }
 

@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 
-function ErrorMessage({ error, onClose, autoClose = true, duration = 5000 }) {
+function ErrorMessage({
+    error,
+    onClose = null,
+    autoClose = true,
+    duration = 5000,
+}) {
     const [isClosing, setIsClosing] = useState(false);
 
     // Close the error message after a duration
@@ -26,9 +31,13 @@ function ErrorMessage({ error, onClose, autoClose = true, duration = 5000 }) {
     if (!error) return null;
 
     return (
-        <div className={`error-message ${isClosing ? 'closing' : ''}`}>
+        <div className={`error-message ${isClosing ? "closing" : ""}`}>
             <span>{error}</span>
-            {onClose && <button className="error-message-btn" onClick={handleClose}>×</button>}
+            {onClose && (
+                <button className="error-message-btn" onClick={handleClose}>
+                    ×
+                </button>
+            )}
         </div>
     );
 }

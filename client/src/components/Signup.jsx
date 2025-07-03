@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import Header from "./Header";
 import Footer from "./Footer";
+import ErrorMessage from "./ErrorMessage";
 import { useState } from "react";
 
 function Signup() {
@@ -9,8 +10,15 @@ function Signup() {
         password: "",
         confirmPassword: "",
     });
+
+    const [fieldErrors, setFieldErrors] = useState({
+        username: "",
+        password: "",
+        confirmPassword: "",
+        general: "",
+    });
+
     const navigate = useNavigate();
-    const [errors, setErrors] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (e) => {
@@ -19,12 +27,25 @@ function Signup() {
             ...formData,
             [name]: value,
         });
+
+        // Clear field error when user starts typing
+        if (fieldErrors[name]) {
+            setFieldErrors((prev) => ({
+                ...prev,
+                [name]: "",
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setErrors([]);
+        setFieldErrors({
+            username: "",
+            password: "",
+            confirmPassword: "",
+            general: "",
+        });
 
         try {
             const response = await fetch(
@@ -42,18 +63,40 @@ function Signup() {
 
             if (!response.ok) {
                 if (data.errors && Array.isArray(data.errors)) {
-                    setErrors(data.errors);
+                    const newFieldErrors = {
+                        username: "",
+                        password: "",
+                        confirmPassword: "",
+                        general: "",
+                    };
+
+                    data.errors.forEach((error) => {
+                        const fieldMap = {
+                            username: "username",
+                            password: "password",
+                            confirmPassword: "confirmPassword",
+                        };
+
+                        const field = fieldMap[error.path] || "general";
+                        newFieldErrors[field] = error.msg;
+                    });
+
+                    setFieldErrors(newFieldErrors);
                 } else {
-                    setErrors([
-                        { msg: data.message || "An unknown error occurred" },
-                    ]);
+                    setFieldErrors((prev) => ({
+                        ...prev,
+                        general: data.message || "An unknown error occurred",
+                    }));
                 }
             } else {
                 // Successful signup
                 navigate("/login");
             }
         } catch (error) {
-            setErrors([{ msg: "Network error. Please try again." }]);
+            setFieldErrors((prev) => ({
+                ...prev,
+                general: "Network error. Please try again.",
+            }));
             console.error("Signup error:", error);
         } finally {
             setIsLoading(false);
@@ -63,71 +106,117 @@ function Signup() {
     return (
         <>
             <Header />
-            <main className="signup-container">
-                <h2>Signup</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="username">Username</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            placeholder="Enter your username"
-                            required
-                        />
-                    </div>
+            <main className="signup-main">
+                <div className="signup-container">
+                    <h2>Signup</h2>
 
-                    <div className="form-group">
-                        <label htmlFor="password">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Enter your password"
-                            required
+                    {fieldErrors.general && (
+                        <ErrorMessage
+                            error={fieldErrors.general}
+                            onClose={() =>
+                                setFieldErrors((prev) => ({
+                                    ...prev,
+                                    general: "",
+                                }))
+                            }
+                            autoClose={true}
+                            duration={5000}
                         />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="confirmPassword">
-                            Confirm Password
-                        </label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            placeholder="Enter your password again"
-                            required
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="signup-button"
-                    >
-                        {isLoading ? "Signing up..." : "Signup"}
-                    </button>
-                    {errors.length > 0 && (
-                        <div className="error-messages">
-                            <ul>
-                                {errors.map((error, index) => (
-                                    <li key={index} className="error-message">
-                                        {error.msg}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
                     )}
-                </form>
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label htmlFor="username">Username</label>
+                            <br></br>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                placeholder="Enter your username"
+                                required
+                                className={`form-input ${
+                                    fieldErrors.username ? "error-input" : ""
+                                }`}
+                            />
+                            <br></br>
+                            <div className="error-container">
+                                {fieldErrors.username && (
+                                    <span className="field-error">
+                                        {fieldErrors.username}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <br></br>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Enter your password"
+                                required
+                                className={`form-input ${
+                                    fieldErrors.password ? "error-input" : ""
+                                }`}
+                            />
+                            <br></br>
+                            <div className="error-container">
+                                {fieldErrors.password && (
+                                    <span className="field-error">
+                                        {fieldErrors.password}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="confirmPassword">
+                                Confirm Password
+                            </label>
+                            <br></br>
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                placeholder="Enter your password again"
+                                required
+                                className={`form-input ${
+                                    fieldErrors.confirmPassword
+                                        ? "error-input"
+                                        : ""
+                                }`}
+                            />
+                            <br></br>
+                            <div className="error-container">
+                                {fieldErrors.confirmPassword && (
+                                    <span className="field-error">
+                                        {fieldErrors.confirmPassword}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="interaction-btn signup-btn"
+                        >
+                            {isLoading ? "Signing up..." : "Signup"}
+                        </button>
+                    </form>
+                </div>
             </main>
-            <footer><Footer></Footer></footer>
+            <footer>
+                <Footer />
+            </footer>
         </>
     );
 }

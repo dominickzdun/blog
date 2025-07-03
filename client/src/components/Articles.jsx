@@ -40,16 +40,16 @@ function Articles() {
             {articles.length === 0 ? (
                 <p>No articles found</p>
             ) : (
-                <ul>
+                <ul className="article-grid">
                     {articles.map((article) => (
-                        <li key={article.id}>
+                        <li className="article-grid-item" key={article.id}>
                             <Link
                                 to={`/articles/${article.id}`}
                                 className="article-link"
                             >
                                 <h2>{article.title}</h2>
                                 <p className="article-preview">
-                                    {article.content.substring(0, 100)}...
+                                    {article.content}
                                 </p>
                                 <p>{article.author.name}</p>
                                 <p>{article.datePosted}</p>
