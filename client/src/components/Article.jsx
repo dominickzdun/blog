@@ -29,7 +29,7 @@ function ArticleDetail() {
             const token = localStorage.getItem("token");
             if (token) {
                 try {
-                    // Decode JWT token to get user info (simple base64 decode of payload)
+                    // Decode JWT token to get user info
                     const payload = JSON.parse(atob(token.split(".")[1]));
                     setCurrentUser({
                         id: payload.id,
@@ -87,9 +87,7 @@ function ArticleDetail() {
 
     const handleCommentCreationChange = (e) => {
         setUserCreatedComment(e.target.value);
-        // Clear error and success messages when user starts typing
         if (error) setError(null);
-        if (successMessage) setSuccessMessage(null);
     };
 
     // Instead of fetching comment data again, just add new comment to front of the array, and format the date
@@ -151,7 +149,7 @@ function ArticleDetail() {
             setIsSubmittingComment(false);
         }
     };
-    
+
     const handleManageCommentDisplay = (commentId) => {
         setActiveManageMenu(activeManageMenu === commentId ? null : commentId);
     };
@@ -268,24 +266,29 @@ function ArticleDetail() {
                         <p>{article.content}</p>
                     </>
                 )}
-                <form onSubmit={handleCommentSubmit}>
-                    <textarea
-                        placeholder="Add a comment"
-                        name="content"
-                        value={userCreatedComment}
-                        onChange={handleCommentCreationChange}
-                        disabled={isSubmittingComment}
-                        required
-                    ></textarea>
-                    <button
-                        type="submit"
-                        disabled={
-                            isSubmittingComment || !userCreatedComment.trim()
-                        }
-                    >
-                        {isSubmittingComment ? "Posting..." : "Post Comment"}
-                    </button>
-                </form>
+                {currentUser &&(
+                    <form onSubmit={handleCommentSubmit}>
+                        <textarea
+                            placeholder="Add a comment"
+                            name="content"
+                            value={userCreatedComment}
+                            onChange={handleCommentCreationChange}
+                            disabled={isSubmittingComment}
+                            required
+                        ></textarea>
+                        <button
+                            type="submit"
+                            disabled={
+                                isSubmittingComment ||
+                                !userCreatedComment.trim()
+                            }
+                        >
+                            {isSubmittingComment
+                                ? "Posting..."
+                                : "Post Comment"}
+                        </button>
+                    </form>
+                )}
 
                 <ErrorMessage
                     error={error}
