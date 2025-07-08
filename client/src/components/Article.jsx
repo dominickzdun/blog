@@ -22,7 +22,6 @@ function ArticleDetail() {
 
     const [error, setError] = useState(null);
     const { id } = useParams();
-
     useEffect(() => {
         // Get current user from token
         const storeUserTokenInfo = () => {
@@ -266,7 +265,7 @@ function ArticleDetail() {
                         <p>{article.content}</p>
                     </>
                 )}
-                {currentUser &&(
+                {currentUser && (
                     <form onSubmit={handleCommentSubmit}>
                         <textarea
                             placeholder="Add a comment"
@@ -346,7 +345,7 @@ function ArticleDetail() {
                                     {comment.datePosted}
                                 </p>
 
-                                {/* Only show manage button if current user owns the comment and not in edit mode */}
+                                {/* Only show manage button if current user owns the comment and not in edit mode AND token not expired */}
                                 {currentUser &&
                                     currentUser.id === comment.authorId &&
                                     editingCommentId !== comment.id && (

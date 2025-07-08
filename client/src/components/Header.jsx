@@ -31,7 +31,7 @@ function Header() {
         } else {
             setIsLoggedIn(false);
         }
-    }, [currentUser]); 
+    }, [currentUser]);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
