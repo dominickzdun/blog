@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router";
+import { useParams } from "react-router";
 import Header from "./Header";
 import Footer from "./Footer";
 import ErrorMessage from "./ErrorMessage";
@@ -253,10 +253,6 @@ function ArticleDetail() {
         <>
             <Header></Header>
             <main className="article-detail">
-                <Link to="/" className="back-link">
-                    Back to Articles
-                </Link>
-
                 {isArticleLoading ? (
                     <p>Loading article details...</p>
                 ) : (
@@ -277,6 +273,7 @@ function ArticleDetail() {
                         ></textarea>
                         <button
                             type="submit"
+                            className="interaction-btn post-comment-btn"
                             disabled={
                                 isSubmittingComment ||
                                 !userCreatedComment.trim()
@@ -345,11 +342,11 @@ function ArticleDetail() {
                                     {comment.datePosted}
                                 </p>
 
-                                {/* Only show manage button if current user owns the comment and not in edit mode AND token not expired */}
+                                {/* Only show manage button if current user owns the comment and not in edit mode*/}
                                 {currentUser &&
                                     currentUser.id === comment.authorId &&
                                     editingCommentId !== comment.id && (
-                                        <>
+                                        <div className="manage-comment-wrapper">
                                             <button
                                                 onClick={() =>
                                                     handleManageCommentDisplay(
@@ -389,7 +386,7 @@ function ArticleDetail() {
                                                     Delete
                                                 </button>
                                             </div>
-                                        </>
+                                        </div>
                                     )}
                             </div>
                         ))

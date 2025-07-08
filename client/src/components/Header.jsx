@@ -3,8 +3,25 @@ import { useNavigate } from "react-router";
 function Header() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
+    const [isMobile, setIsMobile] = useState(false);
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
     const navigate = useNavigate();
 
+    const mobileScreenSize = 600;
+    // Check screen size
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsMobile(window.innerWidth < mobileScreenSize);
+        };
+
+        checkScreenSize();
+
+        // If user changes window size, we must check
+        window.addEventListener("resize", checkScreenSize);
+
+        // Cleanup
+        return () => window.removeEventListener("resize", checkScreenSize);
+    }, []);
     const storeUserTokenInfo = () => {
         const token = localStorage.getItem("token");
         if (token) {
@@ -48,11 +65,41 @@ function Header() {
                     </a>
                 </div>
 
-                {isLoggedIn ? (
+                {isMobile ? (
+                    /* Mobile hamburger menu */
+                    <div className="mobile-menu">
+                        <button
+                            className="hamburger-btn"
+                            onClick={() => setShowMobileMenu(!showMobileMenu)}
+                        >
+                            ☰
+                        </button>
+
+                        {showMobileMenu && (
+                            <div className="mobile-dropdown">
+                                {isLoggedIn ? (
+                                    <>
+                                        <a className="dashboard-link-header" href="/dashboard">Dashboard</a>
+                                        <span className="username-display-header">{currentUser?.username}</span>
+                                        <button className="logout-link-header" onClick={handleLogout}>
+                                            Logout
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <a className="login-link-header" href="/login">Login</a>
+                                        <a className="signup-link-header" href="/signup">Signup</a>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                ) : /* Desktop menu */
+                isLoggedIn ? (
                     <div className="header-right">
                         <a href="/dashboard">Dashboard</a>
                         <span className="display-user">
-                            {currentUser.username}
+                            {currentUser?.username}
                         </span>
                         <button onClick={handleLogout} className="logout-btn">
                             <img
