@@ -25,7 +25,10 @@ const validateComment = [
 const validateSignup = [
     body("username", "Username must not be empty.")
         .trim()
-        .isLength({ min: 1, max: 20})
+        .notEmpty()
+        .withMessage("Username must not be empty.")
+        .isLength({ min: 1, max: 20 })
+        .withMessage("Username must be between 1 and 20 characters.")
         .escape()
         .custom(async (username) => {
             if (!/^[a-zA-Z0-9-]+$/.test(username)) {
