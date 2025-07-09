@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { useParams, useNavigate } from "react-router";
+// This acts as the post maker and editor
 function PostMaker() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -14,7 +15,7 @@ function PostMaker() {
         published: false,
     });
 
-    //if id, user wants to edit, so fetch post details
+    // If id, user wants to edit, so fetch post details
     useEffect(() => {
         const fetchPost = async () => {
             try {

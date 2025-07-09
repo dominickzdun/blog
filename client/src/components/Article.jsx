@@ -253,146 +253,162 @@ function ArticleDetail() {
         <>
             <Header></Header>
             <main className="article-detail">
-                {isArticleLoading ? (
-                    <p>Loading article details...</p>
-                ) : (
-                    <>
-                        <h1>{article.title}</h1>
-                        <p>{article.content}</p>
-                    </>
-                )}
-                {currentUser && (
-                    <form onSubmit={handleCommentSubmit}>
-                        <textarea
-                            placeholder="Add a comment"
-                            name="content"
-                            value={userCreatedComment}
-                            onChange={handleCommentCreationChange}
-                            disabled={isSubmittingComment}
-                            required
-                        ></textarea>
-                        <button
-                            type="submit"
-                            className="interaction-btn post-comment-btn"
-                            disabled={
-                                isSubmittingComment ||
-                                !userCreatedComment.trim()
-                            }
-                        >
-                            {isSubmittingComment
-                                ? "Posting..."
-                                : "Post Comment"}
-                        </button>
-                    </form>
-                )}
+                <div className="content-wrapper">
+                    {isArticleLoading ? (
+                        <p>Loading article details...</p>
+                    ) : (
+                        <>
+                            <h1 className="article-title">{article.title}</h1>
+                            <p className="article-content">{article.content}</p>
+                        </>
+                    )}
+                    {currentUser && (
+                        <div className="create-comment-wrapper">
+                            <form
+                                id="comment-form" // Add an ID to the form
+                                className="create-comment-form"
+                                onSubmit={handleCommentSubmit}
+                            >
+                                <textarea
+                                    className="create-comment-textbox"
+                                    placeholder="Add a comment"
+                                    name="content"
+                                    value={userCreatedComment}
+                                    onChange={handleCommentCreationChange}
+                                    disabled={isSubmittingComment}
+                                    required
+                                ></textarea>
+                            </form>
+                            <div className="submit-comment-wrapper">
+                                <button
+                                    type="submit"
+                                    form="comment-form"
+                                    className="interaction-btn post-comment-btn"
+                                    disabled={
+                                        isSubmittingComment ||
+                                        !userCreatedComment.trim()
+                                    }
+                                >
+                                    {isSubmittingComment
+                                        ? "Posting..."
+                                        : "Comment"}
+                                </button>
+                            </div>
+                        </div>
+                    )}
 
-                <ErrorMessage
-                    error={error}
-                    onClose={() => setError(null)}
-                    autoClose={true}
-                    duration={5000}
-                />
+                    <ErrorMessage
+                        error={error}
+                        onClose={() => setError(null)}
+                        autoClose={true}
+                        duration={5000}
+                    />
 
-                <div className="comments">
-                    {isCommentsLoading ? (
-                        <p>Loading comments...</p>
-                    ) : comments && comments.length > 0 ? (
-                        comments.map((comment) => (
-                            <div key={comment.id} className="comment">
-                                {editingCommentId === comment.id ? (
-                                    // Edit mode
-                                    <div className="comment-edit-form">
-                                        <textarea
-                                            value={editingCommentContent}
-                                            onChange={(e) =>
-                                                setEditingCommentContent(
-                                                    e.target.value
-                                                )
-                                            }
-                                            className="comment-edit-textarea"
-                                        />
-                                        <div className="comment-edit-buttons">
-                                            <button
-                                                onClick={() =>
-                                                    handleSaveCommentEdit(
-                                                        comment.id
+                    <div className="comments">
+                        {isCommentsLoading ? (
+                            <p>Loading comments...</p>
+                        ) : comments && comments.length > 0 ? (
+                            comments.map((comment) => (
+                                <div key={comment.id} className="comment">
+                                    {editingCommentId === comment.id ? (
+                                        // Edit mode
+                                        <div className="comment-edit-form">
+                                            <textarea
+                                                value={editingCommentContent}
+                                                onChange={(e) =>
+                                                    setEditingCommentContent(
+                                                        e.target.value
                                                     )
                                                 }
-                                                className="save-comment-btn"
-                                            >
-                                                Save
-                                            </button>
-                                            <button
-                                                onClick={
-                                                    handleCancelCommentEdit
-                                                }
-                                                className="cancel-comment-btn"
-                                            >
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    // Normal display mode
-                                    <p>{comment.content}</p>
-                                )}
-
-                                <p>
-                                    By {comment.author.name} <br></br>
-                                    {comment.datePosted}
-                                </p>
-
-                                {/* Only show manage button if current user owns the comment and not in edit mode*/}
-                                {currentUser &&
-                                    currentUser.id === comment.authorId &&
-                                    editingCommentId !== comment.id && (
-                                        <div className="manage-comment-wrapper">
-                                            <button
-                                                onClick={() =>
-                                                    handleManageCommentDisplay(
-                                                        comment.id
-                                                    )
-                                                }
-                                                className="manage-comment-button"
-                                            >
-                                                Manage
-                                            </button>
-                                            <div
-                                                className="manage-comment-menu"
-                                                style={{
-                                                    display:
-                                                        activeManageMenu ===
-                                                        comment.id
-                                                            ? "block"
-                                                            : "none",
-                                                }}
-                                            >
+                                                className="comment-edit-textarea"
+                                            />
+                                            <div className="comment-edit-buttons">
                                                 <button
                                                     onClick={() =>
-                                                        handleCommentEdit(
+                                                        handleSaveCommentEdit(
                                                             comment.id
                                                         )
                                                     }
+                                                    className="save-comment-btn"
                                                 >
-                                                    Edit
+                                                    Save
                                                 </button>
                                                 <button
-                                                    onClick={() =>
-                                                        handleCommentDelete(
-                                                            comment.id
-                                                        )
+                                                    onClick={
+                                                        handleCancelCommentEdit
                                                     }
+                                                    className="cancel-comment-btn"
                                                 >
-                                                    Delete
+                                                    Cancel
                                                 </button>
                                             </div>
                                         </div>
+                                    ) : (
+                                        // Normal display mode
+                                        <p className="comment-content">
+                                            {comment.content}
+                                        </p>
                                     )}
-                            </div>
-                        ))
-                    ) : (
-                        <p>No comments yet.</p>
-                    )}
+
+                                    <p>
+                                        By {comment.author.name} <br></br>
+                                        {comment.datePosted}
+                                    </p>
+
+                                    {/* Only show manage button if current user owns the comment and not in edit mode*/}
+                                    {currentUser &&
+                                        currentUser.id === comment.authorId &&
+                                        editingCommentId !== comment.id && (
+                                            <div className="manage-comment-wrapper">
+                                                <button
+                                                    onClick={() =>
+                                                        handleManageCommentDisplay(
+                                                            comment.id
+                                                        )
+                                                    }
+                                                    className="manage-comment-button interaction-btn"
+                                                >
+                                                    Manage
+                                                </button>
+                                                <div
+                                                    className="manage-comment-menu"
+                                                    style={{
+                                                        display:
+                                                            activeManageMenu ===
+                                                            comment.id
+                                                                ? "flex"
+                                                                : "none",
+                                                    }}
+                                                >
+                                                    <button
+                                                        className="comment-edit-btn"
+                                                        onClick={() =>
+                                                            handleCommentEdit(
+                                                                comment.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        className="comment-delete-btn"
+                                                        onClick={() =>
+                                                            handleCommentDelete(
+                                                                comment.id
+                                                            )
+                                                        }
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+                                </div>
+                            ))
+                        ) : (
+                            <p>No comments yet.</p>
+                        )}
+                    </div>
                 </div>
             </main>
             <footer>

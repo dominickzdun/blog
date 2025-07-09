@@ -6,12 +6,6 @@ body {
 }
 
 * {
-    -webkit-user-drag: none;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-
     font-family: sans-serif, Arial, Helvetica;
 }
 
@@ -23,16 +17,27 @@ a {
 :root {
     --black: #070707;
     --charcoal: #40434e;
+    --light-dark: #575b69;
+    --dark: #4e525e;
     --lilac: #c297b8;
     --mimi-pink: #fdcff3;
     --persian-pink: #de89be;
-    --error-red: #f66;
+    --pink-red: #f66;
+    --pink-red-dark: rgb(221, 90, 90);
 }
 
 #root {
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - 2px); /* Fixes slight vertical scroll*/
+}
+
+.non-selectable {
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
 /* Header */
@@ -164,6 +169,10 @@ main {
     padding: 0 25px;
 }
 
+.content-wrapper {
+    max-width: 750px;
+}
+
 .article-grid {
     display: grid;
     list-style-type: none;
@@ -246,7 +255,7 @@ footer {
     background-color: var(--mimi-pink);
     border: none;
     width: 75px;
-
+    font-weight: 100;
     cursor: pointer;
     width: 100%;
 }
@@ -260,7 +269,7 @@ footer {
     margin-left: 10px;
     background: none;
     border: none;
-    color: var(--error-red);
+    color: var(--pink-red);
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
@@ -302,7 +311,7 @@ footer {
     font-size: 14px;
     margin-top: 4px;
     display: block;
-    color: var(--error-red);
+    color: var(--pink-red);
     text-align: center;
     height: 51px;
     align-content: center;
@@ -319,6 +328,94 @@ footer {
     height: 40px;
 }
 /*This is for forms login and signup end */
+
+/* For view singular article */
+.article-title,
+.article-content,
+.comment-content {
+    word-wrap: break-word;
+    width: 100%;
+}
+
+.create-comment-form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.create-comment-textbox {
+    width: 100%;
+    height: 70px;
+    resize: none;
+    border: none;
+    background-color: var(--charcoal);
+    color: white;
+    outline: none;
+    padding: 8px;
+}
+.post-comment-btn {
+    height: 25px;
+    width: 75px;
+    border-radius: 2px;
+    color: var(--black);
+}
+
+.comment {
+    border-top: 1px solid var(--lilac);
+}
+
+.submit-comment-wrapper {
+    display: flex;
+    justify-content: end;
+    padding: 10px;
+}
+
+.create-comment-wrapper {
+    border: 3px solid var(--persian-pink);
+    border-radius: 5px;
+    margin-bottom: 25px;
+}
+
+.article-detail {
+    display: flex;
+    justify-content: center;
+}
+
+.manage-comment-button {
+    width: 75px;
+    height: 35px;
+    border-radius: 3px;
+}
+
+.comment-edit-btn {
+    width: 75px;
+    height: 35px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    background-color: var(--mimi-pink);
+}
+
+.comment-edit-btn:active,
+.comment-edit-btn:hover {
+    background-color: var(--lilac);
+}
+
+.comment-delete-btn {
+    width: 75px;
+    height: 35px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+    color: white;
+    background-color: var(--pink-red);
+}
+
+.comment-delete-btn:active,
+.comment-delete-btn:hover {
+    background-color: var(--pink-red-dark);
+}
+/* For view singular article end */
 
 @keyframes slideDown {
     from {
@@ -342,14 +439,6 @@ footer {
     }
 }
 
-.post-comment-btn {
-    height: 45px;
-    width: 75px;
-    border-radius: 5px;
-    color: var(--black);
-    font-weight: bold;
-}
-
 .comment-edit-form {
     margin-bottom: 10px;
     max-width: 100%;
@@ -363,7 +452,12 @@ footer {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    resize: vertical;
+    resize: none;
+    outline: none;
+    margin-top: 15px;
+    height: 70px;
+    background-color: var(--charcoal);
+    color: white;
     font-family: inherit;
     font-size: inherit;
 }
@@ -375,22 +469,38 @@ footer {
 }
 .manage-comment-wrapper {
     height: 50px;
+    display: flex;
+    gap: 16px;
+}
+
+.manage-comment-menu {
+    gap: 16px;
 }
 
 .save-comment-btn {
-    background-color: #4caf50;
+    background-color: #e637d7;
+    color: white;
+    border: none;
     cursor: pointer;
+    border-radius: 3px;
+    width: 70px;
+    height: 35px;
 }
 
 .save-comment-btn:hover {
-    background-color: #45a049;
+    background-color: #d332c5;
 }
 
 .cancel-comment-btn {
-    background-color: #f44336;
+    background-color: var(--light-dark);
+    color: white;
+    border: none;
     cursor: pointer;
+    border-radius: 3px;
+    width: 70px;
+    height: 35px;
 }
 
 .cancel-comment-btn:hover {
-    background-color: #da190b;
+    background-color: var(--dark);
 }
