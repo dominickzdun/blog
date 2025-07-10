@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 function ErrorMessage({
     error,
@@ -6,35 +6,23 @@ function ErrorMessage({
     autoClose = true,
     duration = 5000,
 }) {
-    const [isClosing, setIsClosing] = useState(false);
-
-    // Close the error message after a duration
     useEffect(() => {
-        if (autoClose && error && onClose) {
+        if (error && autoClose && onClose) {
             const timer = setTimeout(() => {
-                handleClose();
+                onClose();
             }, duration);
 
             return () => clearTimeout(timer);
         }
-    }, [error, onClose, autoClose, duration]);
-
-    const handleClose = () => {
-        setIsClosing(true);
-        // Wait for animation to complete before actually closing
-        setTimeout(() => {
-            onClose();
-            setIsClosing(false); // Reset for next time
-        }, 300); // Has to be the same as CSS duration
-    };
+    }, [error, autoClose, duration, onClose]);
 
     if (!error) return null;
 
     return (
-        <div className={`error-message ${isClosing ? "closing" : ""}`}>
+        <div className="error-message">
             <span>{error}</span>
             {onClose && (
-                <button className="error-message-btn" onClick={handleClose}>
+                <button className="error-message-btn" onClick={onClose}>
                     ×
                 </button>
             )}

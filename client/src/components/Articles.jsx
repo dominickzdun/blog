@@ -40,23 +40,33 @@ function Articles() {
             {articles.length === 0 ? (
                 <p>No articles found</p>
             ) : (
-                <ul className="article-grid">
+                <div className="article-grid">
                     {articles.map((article) => (
-                        <li className="article-grid-item" key={article.id}>
-                            <Link
-                                to={`/articles/${article.id}`}
-                                className="article-link"
-                            >
-                                <h2>{article.title}</h2>
-                                <p className="article-preview">
-                                    {article.content}
-                                </p>
-                                <p>{article.author.name}</p>
-                                <p>{article.datePosted}</p>
-                            </Link>
-                        </li>
+                        <Link
+                            key={article.id}
+                            to={`/articles/${article.id}`}
+                            className="article-link"
+                        >
+                            <div className="article-grid-item">
+                                <div className="article-preview">
+                                    <h2>{article.title}</h2>
+                                    <p>
+                                        {article.content.length > 200
+                                            ? `${article.content.slice(
+                                                  0,
+                                                  200
+                                              )}...`
+                                            : article.content}
+                                    </p>
+                                </div>
+                                <div className="article-meta">
+                                    <p>{article.author.name}</p>
+                                    <p>{article.datePosted}</p>
+                                </div>
+                            </div>
+                        </Link>
                     ))}
-                </ul>
+                </div>
             )}
         </>
     );

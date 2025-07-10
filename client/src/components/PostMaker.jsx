@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { useParams, useNavigate } from "react-router";
+import ErrorMessage from "./ErrorMessage";
 // This acts as the post maker and editor
 function PostMaker() {
     const { id } = useParams();
@@ -174,14 +175,13 @@ function PostMaker() {
                 </header>
                 <main>
                     <form className="post-maker" onSubmit={handleSubmitCreate}>
-                        {error && (
-                            <div
-                                className="error-message"
-                                style={{ color: "red", marginBottom: "10px" }}
-                            >
-                                {error}
-                            </div>
-                        )}
+                        {" "}
+                        <ErrorMessage
+                            error={error}
+                            onClose={() => setError(null)}
+                            autoClose={true}
+                            duration={5000}
+                        ></ErrorMessage>
                         <label htmlFor="title">Title</label>
                         <input
                             type="text"
@@ -202,7 +202,6 @@ function PostMaker() {
                             checked={isChecked}
                             onChange={handleCheck}
                         />
-
                         <button type="submit">Create Post</button>
                     </form>
                 </main>
@@ -224,12 +223,12 @@ function PostMaker() {
                     {" "}
                     <form className="post-maker" onSubmit={handleSubmitEdit}>
                         {error && (
-                            <div
-                                className="error-message"
-                                style={{ color: "red", marginBottom: "10px" }}
-                            >
-                                {error}
-                            </div>
+                            <ErrorMessage
+                                error={error}
+                                onClose={() => setError(null)}
+                                autoClose={true}
+                                duration={5000}
+                            ></ErrorMessage>
                         )}
                         <label htmlFor="title">Title</label>
                         <input
