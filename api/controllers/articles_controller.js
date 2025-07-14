@@ -346,15 +346,27 @@ const createCommentWithValidation = [
     createComment,
 ];
 
+const updatePostWithValidation = [
+    validatePost,
+    handleValidationErrors,
+    updatePost,
+];
+
+const updateCommentWithValidation = [
+    validateComment,
+    handleValidationErrors,
+    updateComment,
+];
+
 module.exports = {
     createPost: createPostWithValidation,
     createComment: createCommentWithValidation,
     getAllPosts,
     getPostById,
-    updatePost,
+    updatePost: updatePostWithValidation, 
     deletePost,
     getComments,
     deleteComment,
-    updateComment,
+    updateComment: updateCommentWithValidation, 
     getUserArticles,
 };
