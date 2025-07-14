@@ -18,4 +18,3 @@ app.use("/articles", routes.articles);
 app.use("/login", routes.login);
 app.use("/signup", routes.signup);
 
-app.listen(process.env.PORT, () => console.log("Server started"));

@@ -46,7 +46,6 @@ function Login() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                console.log(errorData);
                 setFieldErrors((prev) => ({
                     ...prev,
                     login: errorData.message || "Login failed",
@@ -68,7 +67,6 @@ function Login() {
             setIsLoading(false);
         }
     };
-    console.log(fieldErrors);
     return (
         <>
             <Header />

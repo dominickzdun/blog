@@ -34,7 +34,6 @@ function Articles() {
 
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
-    console.log(articles);
     return (
         <>
             {articles.length === 0 ? (

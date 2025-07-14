@@ -2,7 +2,6 @@ function isTokenExpired() {
     const userToken = localStorage.getItem("token");
 
     if (!userToken) {
-        console.log("No token found");
         return true;
     }
 
