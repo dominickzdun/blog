@@ -155,7 +155,7 @@ function Comment({
                         {activeManageMenu === comment.id && (
                             <div className="manage-comment-menu">
                                 <button
-                                    className="comment-edit-btn"
+                                    className="edit-btn"
                                     onClick={() =>
                                         handleCommentEdit(comment.id)
                                     }
@@ -163,7 +163,7 @@ function Comment({
                                     Edit
                                 </button>
                                 <button
-                                    className="comment-delete-btn"
+                                    className="delete-btn"
                                     onClick={() =>
                                         handleCommentDelete(comment.id)
                                     }

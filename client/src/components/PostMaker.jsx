@@ -3,23 +3,30 @@ import Header from "./Header";
 import Footer from "./Footer";
 import { useParams, useNavigate } from "react-router";
 import ErrorMessage from "./ErrorMessage";
-// This acts as the post maker and editor
+
 function PostMaker() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [isChecked, setIsChecked] = useState(false);
+    let isEditing = false;
     const [post, setPost] = useState({
         title: "",
         content: "",
         published: false,
     });
 
-    // If id, user wants to edit, so fetch post details
+    if (id) {
+        isEditing = true;
+    }
+
+    // Fetch post data if editing
     useEffect(() => {
+        if (isEditing == false) return;
+
         const fetchPost = async () => {
             try {
+                setLoading(true);
                 const response = await fetch(
                     `http://${import.meta.env.VITE_API_URL}/articles/${id}`
                 );
@@ -28,115 +35,57 @@ function PostMaker() {
                 }
                 const postData = await response.json();
                 setPost(postData);
-                setIsChecked(postData.published);
             } catch (error) {
                 setError(error.message);
             } finally {
                 setLoading(false);
             }
         };
-        if (id) {
-            setLoading(true);
-            fetchPost();
-        }
-    }, [id]);
+
+        fetchPost();
+    }, [id, isEditing]);
 
     const handleChange = (e) => {
-        setPost({
-            ...post,
-            [e.target.name]: e.target.value,
-        });
+        const { name, value, type, checked } = e.target;
+        setPost((prev) => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : value,
+        }));
     };
 
-    const handleCheck = () => {
-        setIsChecked(!isChecked);
-        setPost({
-            ...post,
-            published: !isChecked,
-        });
-    };
-
-    const handleSubmitCreate = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
 
         const token = localStorage.getItem("token");
         if (!token) {
             setError(
-                "You must be logged in to create a post. Please log in first"
+                `You must be logged in to ${
+                    isEditing ? "edit" : "create"
+                } a post. Please log in first`
             );
             return;
         }
 
         try {
-            const response = await fetch(
-                `http://${import.meta.env.VITE_API_URL}/articles/create`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(post),
-                }
-            );
+            const url = isEditing
+                ? `http://${import.meta.env.VITE_API_URL}/articles/${id}`
+                : `http://${import.meta.env.VITE_API_URL}/articles/create`;
+
+            const method = isEditing ? "PUT" : "POST";
+
+            const response = await fetch(url, {
+                method,
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(post),
+            });
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => null);
-                if (response.status === 401) {
-                    setError("Authentication failed. Please log in again");
-                } else if (response.status === 400) {
-                    setError(
-                        `Validation failed: ${
-                            errorData?.errors
-                                ? errorData.errors.map((e) => e.msg).join(" ")
-                                : "Please check your input"
-                        }`
-                    );
-                } else {
-                    setError(`HTTP error! Status: ${response.status}`);
-                }
-                return;
-            }
 
-            const data = await response.json();
-            console.log("Post created successfully:", data);
-            navigate("/dashboard");
-        } catch (error) {
-            console.error("Error creating post:", error);
-            setError(
-                "An error occurred while creating the post. Please try again"
-            );
-        }
-    };
-
-    const handleSubmitEdit = async (e) => {
-        e.preventDefault();
-        setError(null);
-
-        const token = localStorage.getItem("token");
-        if (!token) {
-            setError(
-                "You must be logged in to edit a post. Please log in first"
-            );
-            return;
-        }
-
-        try {
-            const response = await fetch(
-                `http://${import.meta.env.VITE_API_URL}/articles/${id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify(post),
-                }
-            );
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => null);
                 if (response.status === 401) {
                     setError("Authentication failed. Please log in again");
                 } else if (response.status === 400) {
@@ -154,112 +103,74 @@ function PostMaker() {
             }
 
             const data = await response.json();
-            console.log("Post updated successfully:", data);
+
             navigate("/dashboard");
         } catch (error) {
-            console.error("Error updating post:", error);
+            console.error(error);
             setError(
-                "An error occurred while updating the post. Please try again"
+                `An error occurred while ${
+                    isEditing ? "updating" : "creating"
+                } the post. Please try again`
             );
         }
     };
 
     if (loading) return <p>Loading...</p>;
 
-    if (!id) {
-        // If there isnt an id,  user wants to create post
-        return (
-            <>
-                <header>
-                    <Header></Header>
-                </header>
-                <main>
-                    <form className="post-maker" onSubmit={handleSubmitCreate}>
-                        {" "}
-                        <ErrorMessage
-                            error={error}
-                            onClose={() => setError(null)}
-                            autoClose={true}
-                            duration={5000}
-                        ></ErrorMessage>
-                        <label htmlFor="title">Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            value={post.title}
-                            onChange={handleChange}
-                        />
-                        <label htmlFor="content">Content</label>
-                        <textarea
-                            name="content"
-                            value={post.content}
-                            onChange={handleChange}
-                        ></textarea>
-                        <label htmlFor="published">Publish</label>
+    return (
+        <>
+            <header>
+                <Header />
+            </header>
+            <main className="center-main">
+                <form className="post-maker" onSubmit={handleSubmit}>
+                    <ErrorMessage
+                        error={error}
+                        onClose={() => setError(null)}
+                        autoClose={true}
+                        duration={5000}
+                    />
+
+                    <label htmlFor="title">Title</label>
+                    <input
+                        type="text"
+                        name="title"
+                        id="title"
+                        value={post.title}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <label htmlFor="content">Content</label>
+                    <textarea
+                        name="content"
+                        id="content"
+                        value={post.content}
+                        onChange={handleChange}
+                        required
+                    />
+
+                    <label htmlFor="published">
                         <input
                             type="checkbox"
                             name="published"
-                            checked={isChecked}
-                            onChange={handleCheck}
-                        />
-                        <button type="submit">Create Post</button>
-                    </form>
-                </main>
-
-                <footer>
-                    <Footer></Footer>
-                </footer>
-            </>
-        );
-    } else {
-        // Else user wants to edit post
-
-        return (
-            <>
-                <header>
-                    <Header></Header>
-                </header>
-                <main>
-                    {" "}
-                    <form className="post-maker" onSubmit={handleSubmitEdit}>
-                        {error && (
-                            <ErrorMessage
-                                error={error}
-                                onClose={() => setError(null)}
-                                autoClose={true}
-                                duration={5000}
-                            ></ErrorMessage>
-                        )}
-                        <label htmlFor="title">Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            value={post.title}
+                            id="published"
+                            checked={post.published}
                             onChange={handleChange}
                         />
-                        <label htmlFor="content">Content</label>
-                        <textarea
-                            name="content"
-                            value={post.content}
-                            onChange={handleChange}
-                        ></textarea>
-                        <label htmlFor="published">Publish</label>
-                        <input
-                            type="checkbox"
-                            name="published"
-                            checked={isChecked}
-                            onChange={handleCheck}
-                        />
+                        Publish
+                    </label>
 
-                        <button type="submit">Finalize Edit</button>
-                    </form>
-                </main>
-                <footer>
-                    <Footer></Footer>
-                </footer>
-            </>
-        );
-    }
+                    <button type="submit">
+                        {isEditing ? "Update Post" : "Create Post"}
+                    </button>
+                </form>
+            </main>
+            <footer>
+                <Footer />
+            </footer>
+        </>
+    );
 }
 
 export default PostMaker;

@@ -132,36 +132,56 @@ function Dashboard() {
             <header>
                 <Header></Header>
             </header>
-            <main>
-                <h1>Dashboard</h1>
-                <Link to="/create">Create a new post</Link>
-                <ul>
-                    {userPosts.map((post) => (
-                        <li key={post.id}>
-                            <Link to={`/articles/${post.id}`}>
-                                {post.title}
-                            </Link>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={post.published}
-                                    onChange={(e) =>
-                                        handlePostVisibilityChange(post)
-                                    }
-                                />
-                                Published
-                            </label>
-                            <button onClick={() => handlePostDeletion(post.id)}>
-                                Delete
-                            </button>
-                            <button onClick={() => handleEditRedirect(post.id)}>
-                                Edit
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+            <main className="center-main">
+                <div className="dashboard-wrapper">
+                    <h1>Dashboard</h1>
+                    <Link className="interaction-btn create-new-post" to="/create">Create a new post</Link>
+                    <div className="dashboard-article-link-wrapper">
+                        {userPosts.map((post) => (
+                            <div
+                                className="dashboard-article-link"
+                                key={post.id}
+                            >
+                                <Link to={`/articles/${post.id}`}>
+                                    {post.title}
+                                </Link>
+                                <div className="dashboard-article-options-wrapper">
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            className="is-published-checkbox"
+                                            checked={post.published}
+                                            onChange={(e) =>
+                                                handlePostVisibilityChange(post)
+                                            }
+                                        />
+                                        Published
+                                    </label>
+                                    <button
+                                        className="edit-btn"
+                                        onClick={() =>
+                                            handleEditRedirect(post.id)
+                                        }
+                                    >
+                                        Edit
+                                    </button>
+                                    <button
+                                        className="delete-btn"
+                                        onClick={() =>
+                                            handlePostDeletion(post.id)
+                                        }
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </main>
-            <footer><Footer></Footer></footer>
+            <footer>
+                <Footer></Footer>
+            </footer>
         </>
     );
 }
