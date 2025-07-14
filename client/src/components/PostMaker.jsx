@@ -144,26 +144,32 @@ function PostMaker() {
                     <label htmlFor="content">Content</label>
                     <textarea
                         name="content"
+                        className="post-maker-textbox"
                         id="content"
                         value={post.content}
                         onChange={handleChange}
                         required
                     />
+                    <div className="bottom-post-maker">
+                        <label htmlFor="published">
+                            Publish
+                            <input
+                                type="checkbox"
+                                className="checkbox"
+                                name="published"
+                                id="published"
+                                checked={post.published}
+                                onChange={handleChange}
+                            />
+                        </label>
 
-                    <label htmlFor="published">
-                        <input
-                            type="checkbox"
-                            name="published"
-                            id="published"
-                            checked={post.published}
-                            onChange={handleChange}
-                        />
-                        Publish
-                    </label>
-
-                    <button type="submit">
-                        {isEditing ? "Update Post" : "Create Post"}
-                    </button>
+                        <button
+                            className="interaction-btn post-maker-btn"
+                            type="submit"
+                        >
+                            {isEditing ? "Update Post" : "Create Post"}
+                        </button>
+                    </div>
                 </form>
             </main>
             <footer>

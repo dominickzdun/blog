@@ -43,6 +43,7 @@ function Articles() {
                 <div className="article-grid">
                     {articles.map((article) => (
                         <Link
+                            draggable={false}
                             key={article.id}
                             to={`/articles/${article.id}`}
                             className="article-link"

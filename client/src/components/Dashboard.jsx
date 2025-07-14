@@ -134,22 +134,32 @@ function Dashboard() {
             </header>
             <main className="center-main">
                 <div className="dashboard-wrapper">
-                    <h1>Dashboard</h1>
-                    <Link className="interaction-btn create-new-post" to="/create">Create a new post</Link>
+                    <div className="dashboard-top">
+                        <h1>Dashboard</h1>
+                        <Link
+                            className="interaction-btn create-new-post"
+                            to="/create"
+                        >
+                            Create a new post
+                        </Link>
+                    </div>
                     <div className="dashboard-article-link-wrapper">
                         {userPosts.map((post) => (
                             <div
                                 className="dashboard-article-link"
                                 key={post.id}
                             >
-                                <Link to={`/articles/${post.id}`}>
+                                <Link
+                                    draggable={false}
+                                    to={`/articles/${post.id}`}
+                                >
                                     {post.title}
                                 </Link>
                                 <div className="dashboard-article-options-wrapper">
                                     <label>
                                         <input
                                             type="checkbox"
-                                            className="is-published-checkbox"
+                                            className="checkbox"
                                             checked={post.published}
                                             onChange={(e) =>
                                                 handlePostVisibilityChange(post)
