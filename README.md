@@ -14,18 +14,6 @@ It allows users to:
   <li>Comment on posts and engage with the community</li>
 </ul>
 
----
-
-## ✨ Features
-
-- User authentication (JWT)
-- Blog post creation, editing, and deletion
-- Comment system
-- Responsive design
-- RESTful API with error handling
-
----
-
 ## ⚙️ Tech Stack
 
 **Frontend:**
@@ -71,9 +59,9 @@ Create a .env file with the following variable:
 
     VITE_API_URL=chitai-api.onrender.com
 
-Do not include http:// or https://
+Do not include http:// or https:// <br>
+❌ Incorrect: "https://chitai-api.onrender.com" <br>
 ✅ Correct: "chitai-api.onrender.com"
-❌ Incorrect: "https://chitai-api.onrender.com"
 
 Start the frontend server:
 
